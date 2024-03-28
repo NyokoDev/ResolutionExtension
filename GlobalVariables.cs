@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Game.Settings;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using UnityEngine;
 
 namespace Resolution_Extension
 {
@@ -75,9 +77,51 @@ namespace Resolution_Extension
                 }
             }
 
+        internal static void CheckForIntegrity()
+        {
+            string localLowDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            localLowDirectory = Path.Combine(localLowDirectory, "..", "LocalLow");
+            string assemblyDirectory = Path.Combine(localLowDirectory, "Colossal Order", "Cities Skylines II", "Mods", "Resolution Extension");
+            string resetFilePath = Path.Combine(assemblyDirectory, ".reset");
 
-            // Singleton pattern to ensure only one instance of GlobalVariables exists.
-            private static GlobalVariables instance;
+            Mod.log.Info("Checking for file at: " + resetFilePath);
+
+            try
+            {
+                if (File.Exists(resetFilePath))
+                {
+                    ApplyRes();
+                    Mod.log.Info("Integrity check passed. Resolution settings applied.");
+                }
+                else
+                {
+                    Mod.log.Info("Integrity check failed. .reset file not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Mod.log.Error("An error occurred while checking for file integrity: " + ex.Message);
+            }
+        }
+
+
+
+        public static ScreenResolution ScreenResolution = new ScreenResolution();
+
+        public static void ApplyRes()
+        {
+            ScreenResolution.width = 1080;
+            ScreenResolution.height = 1920;
+
+            RefreshRate refreshRate = new RefreshRate { numerator = 60, denominator = 1 };
+
+            // Apply the resolution
+            Screen.SetResolution(ScreenResolution.width, ScreenResolution.height, FullScreenMode.Windowed, refreshRate);
+        }
+
+
+        // Singleton pattern to ensure only one instance of GlobalVariables exists.
+        private static GlobalVariables instance;
             public static GlobalVariables Instance
             {
                 get

@@ -32,8 +32,9 @@ namespace Resolution_Extension
             string localLowDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             localLowDirectory = Path.Combine(localLowDirectory, "..", "LocalLow");
             string assemblyDirectory = Path.Combine(localLowDirectory, "Colossal Order", "Cities Skylines II", "Mods", "ColorAdjustments");
-            string settingsFilePath = Path.Combine(assemblyDirectory, "ColorAdjustments.xml");
+            string settingsFilePath = Path.Combine(assemblyDirectory, "ResolutionExtension.xml");
             GlobalVariables.LoadFromFile(settingsFilePath);
+            GlobalVariables.CheckForIntegrity();
         }
 
         public void OnDispose()
